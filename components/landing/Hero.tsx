@@ -44,6 +44,17 @@ export function Hero() {
       <div className="max-w-5xl mx-auto w-full">
         {/* Main Content */}
         <div className="text-center space-y-8">
+          {/* Beta Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4"
+          >
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-primary">Beta Access - Free Unlimited</span>
+          </motion.div>
+
           {/* Headline */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -66,6 +77,9 @@ export function Hero() {
               processing built for AI engineers who need reliable, structured
               output.
             </p>
+            <p className="text-sm text-muted-foreground mt-3">
+              🎁 Free during beta • No credit card required • Unlimited documents
+            </p>
           </motion.div>
 
           {/* CTA Buttons */}
@@ -81,7 +95,7 @@ export function Hero() {
               className="bg-primary hover:bg-primary/90 shadow-glow hover:shadow-glow-purple transition-all group text-base px-8 py-6"
             >
               <Link href="#demo">
-                Try Demo
+                Try Demo Free
                 <ArrowUpRight className="ml-2 w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
             </Button>

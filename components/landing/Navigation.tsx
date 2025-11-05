@@ -70,7 +70,7 @@ export function Navigation() {
               asChild
               className="bg-primary hover:bg-primary/90 shadow-glow hover:shadow-glow transition-all"
             >
-              <Link href="/signup">Get API Key</Link>
+              <Link href="/signup">Get Beta Access</Link>
             </Button>
           </div>
 
@@ -115,7 +115,7 @@ export function Navigation() {
                 className="w-full bg-primary hover:bg-primary/90 shadow-glow"
               >
                 <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  Get API Key
+                  Get Beta Access
                 </Link>
               </Button>
             </div>
