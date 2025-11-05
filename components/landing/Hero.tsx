@@ -82,7 +82,7 @@ export function Hero() {
               size="lg"
               className="bg-primary hover:bg-primary/90 shadow-glow hover:shadow-glow-purple transition-all group text-base px-8 py-6"
             >
-              <Link href="#demo">
+              <Link href="/playground">
                 Try Demo
                 <ArrowUpRight className="ml-2 w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
