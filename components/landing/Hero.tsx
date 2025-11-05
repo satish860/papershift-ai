@@ -31,19 +31,19 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-20">
+    <section className="relative h-screen flex items-center justify-center px-4">
       <div className="max-w-5xl mx-auto w-full">
         {/* Main Content */}
-        <div className="text-center space-y-8">
+        <div className="text-center space-y-6">
           {/* Beta Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full mb-4"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full"
           >
             <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-primary">Beta Access - Free Unlimited</span>
+            <span className="text-sm font-medium text-primary">Free Beta Access • No Credit Card</span>
           </motion.div>
 
           {/* Headline */}
@@ -68,9 +68,6 @@ export function Hero() {
               processing built for AI engineers who need reliable, structured
               output.
             </p>
-            <p className="text-sm text-muted-foreground mt-3">
-              🎁 Free during beta • No credit card required • Unlimited documents
-            </p>
           </motion.div>
 
           {/* CTA Buttons */}
@@ -86,7 +83,7 @@ export function Hero() {
               className="bg-primary hover:bg-primary/90 shadow-glow hover:shadow-glow-purple transition-all group text-base px-8 py-6"
             >
               <Link href="#demo">
-                Try Demo Free
+                Try Demo
                 <ArrowUpRight className="ml-2 w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </Link>
             </Button>
@@ -115,7 +112,7 @@ export function Hero() {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-20" />
 
               {/* Code block */}
-              <div className="relative bg-card border border-border rounded-lg p-6 text-left">
+              <div className="relative bg-card border border-border rounded-lg p-5 text-left">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-3 h-3 rounded-full bg-red-500" />
                   <div className="w-3 h-3 rounded-full bg-yellow-500" />
@@ -195,7 +192,7 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="space-y-4"
+            className="space-y-3"
           >
             <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
