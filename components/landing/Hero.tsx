@@ -1,43 +1,34 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
-const codeSnippet = `from papershift import OCR
-result = OCR.process("document.pdf")
-print(result.markdown)  # Clean, AI-ready text`;
+const codeSnippet = `import requests
+
+response = requests.post(
+    "https://api.papershift.ai/v1/ocr",
+    headers={"Authorization": f"Bearer {API_KEY}"},
+    json={"url": "document.pdf"}
+)
+
+print(response.json()["markdown"])  # Clean, AI-ready text`;
 
 export function Hero() {
-  const [displayedCode, setDisplayedCode] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [apiKeyHovered, setApiKeyHovered] = useState(false);
 
-  // Typing animation for code snippet
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsTyping(true);
-    }, 800); // Start typing after other animations
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!isTyping) return;
-
-    let currentIndex = 0;
-    const interval = setInterval(() => {
-      if (currentIndex <= codeSnippet.length) {
-        setDisplayedCode(codeSnippet.slice(0, currentIndex));
-        currentIndex++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 30); // Typing speed
-
-    return () => clearInterval(interval);
-  }, [isTyping]);
+  const handleGetApiKey = () => {
+    // Scroll to demo section
+    document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <section className="relative min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-20">
@@ -105,10 +96,10 @@ export function Hero() {
               variant="outline"
               className="border-border hover:bg-muted group text-base px-8 py-6"
             >
-              <Link href="/docs">
-                View Docs
+              <a href="http://localhost:8000/docs" target="_blank" rel="noopener noreferrer">
+                View API Docs
                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </a>
             </Button>
           </motion.div>
 
@@ -130,29 +121,111 @@ export function Hero() {
                   <div className="w-3 h-3 rounded-full bg-yellow-500" />
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                 </div>
-                <pre className="font-mono text-sm md:text-base overflow-x-auto">
-                  <code className="text-foreground">
-                    <span className="text-purple-400">from</span>{' '}
-                    <span className="text-blue-400">papershift</span>{' '}
-                    <span className="text-purple-400">import</span>{' '}
-                    <span className="text-green-400">OCR</span>
-                    {'\n'}
-                    <span className="text-foreground">result</span>{' '}
-                    <span className="text-purple-400">=</span>{' '}
-                    <span className="text-green-400">OCR</span>
-                    <span className="text-foreground">.</span>
-                    <span className="text-yellow-400">process</span>
-                    <span className="text-foreground">(</span>
-                    <span className="text-orange-400">"document.pdf"</span>
-                    <span className="text-foreground">)</span>
-                    {'\n'}
-                    <span className="text-purple-400">print</span>
-                    <span className="text-foreground">(result.markdown)</span>{' '}
-                    <span className="text-gray-500"># Clean, AI-ready text</span>
-                  </code>
-                </pre>
+                <TooltipProvider>
+                  <pre className="font-mono text-sm md:text-base overflow-x-auto">
+                    <code className="text-foreground">
+                      <span className="text-purple-400">import</span>{' '}
+                      <span className="text-blue-400">requests</span>
+                      {'\n\n'}
+                      <span className="text-foreground">response</span>{' '}
+                      <span className="text-purple-400">=</span>{' '}
+                      <span className="text-foreground">requests.</span>
+                      <span className="text-yellow-400">post</span>
+                      <span className="text-foreground">(</span>
+                      {'\n'}
+                      <span className="text-foreground">    </span>
+                      <span className="text-orange-400">"https://api.papershift.ai/v1/ocr"</span>
+                      <span className="text-foreground">,</span>
+                      {'\n'}
+                      <span className="text-foreground">    headers</span>
+                      <span className="text-purple-400">=</span>
+                      <span className="text-foreground">{'{'}</span>
+                      <span className="text-orange-400">"Authorization"</span>
+                      <span className="text-foreground">: </span>
+                      <span className="text-cyan-400">f</span>
+                      <span className="text-orange-400">"Bearer </span>
+                      <span className="text-foreground">{'{'}</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span
+                            className="text-foreground underline decoration-dotted decoration-primary cursor-pointer hover:text-primary transition-colors"
+                            onClick={handleGetApiKey}
+                            onMouseEnter={() => setApiKeyHovered(true)}
+                            onMouseLeave={() => setApiKeyHovered(false)}
+                          >
+                            API_KEY
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="text-xs">👆 Click to get your free API key</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <span className="text-foreground">{'}'}</span>
+                      <span className="text-orange-400">"</span>
+                      <span className="text-foreground">{'}'}</span>
+                      <span className="text-foreground">,</span>
+                      {'\n'}
+                      <span className="text-foreground">    json</span>
+                      <span className="text-purple-400">=</span>
+                      <span className="text-foreground">{'{'}</span>
+                      <span className="text-orange-400">"url"</span>
+                      <span className="text-foreground">: </span>
+                      <span className="text-orange-400">"document.pdf"</span>
+                      <span className="text-foreground">{'}'}</span>
+                      {'\n'}
+                      <span className="text-foreground">)</span>
+                      {'\n\n'}
+                      <span className="text-purple-400">print</span>
+                      <span className="text-foreground">(response.</span>
+                      <span className="text-yellow-400">json</span>
+                      <span className="text-foreground">()[</span>
+                      <span className="text-orange-400">"markdown"</span>
+                      <span className="text-foreground">])</span>
+                      {' '}
+                      <span className="text-gray-500"># Clean, AI-ready text</span>
+                    </code>
+                  </pre>
+                </TooltipProvider>
               </div>
             </div>
+          </motion.div>
+
+          {/* Feature Highlights */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="space-y-4"
+          >
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Simple REST API
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Clean markdown output
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Multi-lingual support
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Bounding box metadata
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground/80">
+              Full API documentation available at{' '}
+              <a
+                href="http://localhost:8000/docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                localhost:8000/docs
+              </a>
+            </p>
           </motion.div>
         </div>
 
