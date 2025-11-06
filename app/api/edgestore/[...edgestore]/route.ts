@@ -20,7 +20,6 @@ const edgeStoreRouter = es.router({
         type: z.enum(['pdf', 'image']).optional(),
       })
     )
-    .path(({ input }) => [{ type: input.type || 'document' }])
     .beforeUpload(() => {
       // Add authentication logic here in the future
       // For now, allow all uploads during beta
@@ -30,7 +29,6 @@ const edgeStoreRouter = es.router({
 
 const handler = createEdgeStoreNextHandler({
   router: edgeStoreRouter,
-  basePath: '/api/edgestore',
 });
 
 export { handler as GET, handler as POST };
