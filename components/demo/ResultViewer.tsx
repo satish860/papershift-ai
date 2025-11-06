@@ -9,11 +9,13 @@ import type { OcrResult } from "@/lib/types"
 interface ResultViewerProps {
   result: OcrResult | null
   processing: boolean
+  selectedBlockIndex?: number | null
+  onBlockClick?: (index: number) => void
 }
 
-export function ResultViewer({ result, processing }: ResultViewerProps) {
+export function ResultViewer({ result, processing, selectedBlockIndex, onBlockClick }: ResultViewerProps) {
   const [copied, setCopied] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("markdown")
+  const [activeTab, setActiveTab] = useState("blocks")
 
   const handleCopy = (content: string, type: string) => {
     navigator.clipboard.writeText(content)
@@ -56,11 +58,40 @@ export function ResultViewer({ result, processing }: ResultViewerProps) {
         {/* Tab Headers */}
         <div className="border-b border-border px-4">
           <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsTrigger value="blocks">Blocks</TabsTrigger>
             <TabsTrigger value="markdown">Markdown</TabsTrigger>
             <TabsTrigger value="html">HTML</TabsTrigger>
-            <TabsTrigger value="json">JSON</TabsTrigger>
           </TabsList>
         </div>
+
+        {/* Blocks Tab */}
+        <TabsContent value="blocks" className="flex-1 overflow-auto p-4 m-0">
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Click on a block to highlight it in the document
+            </p>
+            <div className="space-y-2">
+              {result.boundingBoxes.map((block, index) => (
+                <div
+                  key={block.id || `block-${index}`}
+                  onClick={() => onBlockClick?.(index)}
+                  className={`border-l-2 pl-4 py-2 cursor-pointer transition-all ${
+                    selectedBlockIndex === index
+                      ? 'border-primary bg-primary/10'
+                      : 'border-primary/30 hover:border-primary/60 hover:bg-primary/5'
+                  }`}
+                >
+                  <div className="text-xs text-muted-foreground mb-1">
+                    {block.type} • Block {index + 1}
+                  </div>
+                  <div className="text-sm line-clamp-3">
+                    {block.text || '(No text)'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
 
         {/* Markdown Tab */}
         <TabsContent value="markdown" className="flex-1 overflow-auto p-4 m-0">
@@ -131,39 +162,6 @@ export function ResultViewer({ result, processing }: ResultViewerProps) {
           </div>
         </TabsContent>
 
-        {/* JSON Tab */}
-        <TabsContent value="json" className="flex-1 overflow-auto p-4 m-0">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                Full API response with metadata
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleCopy(JSON.stringify(result, null, 2), "json")}
-                >
-                  {copied === "json" ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDownload(JSON.stringify(result, null, 2), "result.json")}
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <pre className="text-sm bg-background p-4 rounded-lg border border-border overflow-x-auto font-mono">
-              {JSON.stringify(result, null, 2)}
-            </pre>
-          </div>
-        </TabsContent>
       </Tabs>
     </div>
   )

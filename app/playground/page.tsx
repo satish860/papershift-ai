@@ -7,45 +7,72 @@ import { ProcessingStatus } from "@/components/demo/ProcessingStatus"
 import { DocumentViewer } from "@/components/demo/DocumentViewer"
 import { ResultViewer } from "@/components/demo/ResultViewer"
 import { PlaygroundLayout } from "@/components/demo/PlaygroundLayout"
-import { processDocumentStream } from "@/lib/api"
+import { processDocumentFromUrl } from "@/lib/api"
+import { useEdgeStore } from "@/lib/edgestore"
 import type { OcrResult } from "@/lib/types"
 
 export default function PlaygroundPage() {
+  const { edgestore } = useEdgeStore()
+
   // State management
   const [file, setFile] = useState<File | null>(null)
   const [fileUrl, setFileUrl] = useState<string | null>(null)
   const [processing, setProcessing] = useState(false)
   const [progress, setProgress] = useState<number | null>(null)
   const [eta, setEta] = useState<number | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
   const [result, setResult] = useState<OcrResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [selectedBlockIndex, setSelectedBlockIndex] = useState<number | null>(null)
 
-  // Handle file upload
+  // Handle file upload - Two stage process: EdgeStore -> OCR
   const handleFileUpload = async (uploadedFile: File) => {
     setFile(uploadedFile)
-    setFileUrl(URL.createObjectURL(uploadedFile))
     setError(null)
     setProcessing(true)
-    setProgress(null)
+    setProgress(0)
     setEta(null)
+    setMessage("Uploading file...")
     setResult(null)
 
     try {
-      await processDocumentStream(
-        uploadedFile,
+      // Stage 1: Upload to Edge Store (0-50% progress)
+      setMessage("Uploading to Edge Store...")
+      const uploadRes = await edgestore.publicFiles.upload({
+        file: uploadedFile,
+        input: { type: uploadedFile.type.includes('pdf') ? 'pdf' : 'image' },
+        onProgressChange: (uploadProgress) => {
+          // Map 0-100 to 0-50
+          setProgress(Math.round(uploadProgress / 2))
+          setMessage(`Uploading: ${uploadProgress}%`)
+        },
+      })
+
+      const documentUrl = uploadRes.url
+      setFileUrl(documentUrl)
+      setMessage("Upload complete! Starting OCR processing...")
+
+      // Stage 2: Process with OCR API (50-100% progress)
+      await processDocumentFromUrl(
+        documentUrl,
         // onProgress
-        (prog, etaValue) => {
-          setProgress(prog)
+        (ocrProgress, etaValue, progressMessage) => {
+          // Map OCR progress 0-100 to 50-100 total progress
+          const totalProgress = Math.round(50 + (ocrProgress / 2))
+          setProgress(totalProgress)
           setEta(etaValue || null)
+          setMessage(progressMessage || "Processing OCR...")
         },
         // onComplete
         (res) => {
           setResult(res)
           setProcessing(false)
+          setProgress(100)
+          setMessage("Complete!")
         },
         // onError
         (err) => {
-          setError(err.message || "Processing failed")
+          setError(err.message || "OCR processing failed")
           setProcessing(false)
         }
       )
@@ -62,6 +89,11 @@ export default function PlaygroundPage() {
     setError("Example documents coming soon!")
   }
 
+  // Handle block selection
+  const handleBlockClick = (index: number) => {
+    setSelectedBlockIndex(index === selectedBlockIndex ? null : index)
+  }
+
   // Handle retry
   const handleRetry = () => {
     setFile(null)
@@ -70,7 +102,9 @@ export default function PlaygroundPage() {
     setError(null)
     setProgress(null)
     setEta(null)
+    setMessage(null)
     setProcessing(false)
+    setSelectedBlockIndex(null)
   }
 
   return (
@@ -110,14 +144,21 @@ export default function PlaygroundPage() {
 
         {(processing || result) && (
           <div className="space-y-4">
-            {processing && <ProcessingStatus progress={progress} eta={eta} />}
+            {processing && <ProcessingStatus progress={progress} eta={eta} message={message} />}
 
             <PlaygroundLayout>
               <DocumentViewer
                 imageUrl={fileUrl}
                 boundingBoxes={result?.boundingBoxes || []}
+                imageDimensions={result?.imageDimensions}
+                selectedBlockIndex={selectedBlockIndex}
               />
-              <ResultViewer result={result} processing={processing} />
+              <ResultViewer
+                result={result}
+                processing={processing}
+                selectedBlockIndex={selectedBlockIndex}
+                onBlockClick={handleBlockClick}
+              />
             </PlaygroundLayout>
 
             {result && (

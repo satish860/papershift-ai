@@ -30,6 +30,10 @@ export interface OcrResult {
   html: string;
   json: Record<string, any>;
   boundingBoxes: BoundingBox[];
+  imageDimensions?: {
+    width: number;
+    height: number;
+  };
   metadata: {
     pageCount: number;
     processingTime: number;
