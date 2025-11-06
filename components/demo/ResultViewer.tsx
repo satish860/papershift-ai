@@ -56,35 +56,45 @@ export function ResultViewer({ result, processing, selectedBlockIndex, onBlockCl
     <div className="h-full flex flex-col">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
         {/* Tab Headers */}
-        <div className="border-b border-border px-4">
-          <TabsList className="grid w-full max-w-md grid-cols-3">
-            <TabsTrigger value="blocks">Blocks</TabsTrigger>
-            <TabsTrigger value="markdown">Markdown</TabsTrigger>
-            <TabsTrigger value="html">HTML</TabsTrigger>
+        <div className="border-b border-border px-4 pt-4 bg-muted/30">
+          <TabsList className="grid w-full grid-cols-3 h-11">
+            <TabsTrigger value="blocks" className="data-[state=active]:bg-background">Blocks</TabsTrigger>
+            <TabsTrigger value="markdown" className="data-[state=active]:bg-background">Markdown</TabsTrigger>
+            <TabsTrigger value="html" className="data-[state=active]:bg-background">HTML</TabsTrigger>
           </TabsList>
         </div>
 
         {/* Blocks Tab */}
-        <TabsContent value="blocks" className="flex-1 overflow-auto p-4 m-0">
+        <TabsContent value="blocks" className="flex-1 overflow-auto p-6 m-0">
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Click on a block to highlight it in the document
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                Click on a block to highlight it in the document
+              </p>
+              <span className="text-xs text-muted-foreground">
+                {result.boundingBoxes.length} blocks
+              </span>
+            </div>
             <div className="space-y-2">
               {result.boundingBoxes.map((block, index) => (
                 <div
                   key={block.id || `block-${index}`}
                   onClick={() => onBlockClick?.(index)}
-                  className={`border-l-2 pl-4 py-2 cursor-pointer transition-all ${
+                  className={`group relative border-l-3 pl-4 py-3 rounded-r-lg cursor-pointer transition-all duration-200 ${
                     selectedBlockIndex === index
-                      ? 'border-primary bg-primary/10'
-                      : 'border-primary/30 hover:border-primary/60 hover:bg-primary/5'
+                      ? 'border-primary bg-primary/10 shadow-sm'
+                      : 'border-border hover:border-primary/60 hover:bg-muted/40 hover:shadow-sm'
                   }`}
                 >
-                  <div className="text-xs text-muted-foreground mb-1">
-                    {block.type} • Block {index + 1}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      {block.type}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      #{index + 1}
+                    </div>
                   </div>
-                  <div className="text-sm line-clamp-3">
+                  <div className="text-sm leading-relaxed line-clamp-3">
                     {block.text || '(No text)'}
                   </div>
                 </div>
@@ -94,7 +104,7 @@ export function ResultViewer({ result, processing, selectedBlockIndex, onBlockCl
         </TabsContent>
 
         {/* Markdown Tab */}
-        <TabsContent value="markdown" className="flex-1 overflow-auto p-4 m-0">
+        <TabsContent value="markdown" className="flex-1 overflow-auto p-6 m-0">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
@@ -102,33 +112,42 @@ export function ResultViewer({ result, processing, selectedBlockIndex, onBlockCl
               </p>
               <div className="flex gap-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={() => handleCopy(result.markdown, "markdown")}
+                  className="gap-2"
                 >
                   {copied === "markdown" ? (
-                    <Check className="h-4 w-4" />
+                    <>
+                      <Check className="h-4 w-4" />
+                      Copied
+                    </>
                   ) : (
-                    <Copy className="h-4 w-4" />
+                    <>
+                      <Copy className="h-4 w-4" />
+                      Copy
+                    </>
                   )}
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={() => handleDownload(result.markdown, "document.md")}
+                  className="gap-2"
                 >
                   <Download className="h-4 w-4" />
+                  Download
                 </Button>
               </div>
             </div>
-            <pre className="text-sm bg-background p-4 rounded-lg border border-border overflow-x-auto whitespace-pre-wrap font-mono">
+            <pre className="text-sm bg-muted/50 p-6 rounded-xl border border-border overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
               {result.markdown}
             </pre>
           </div>
         </TabsContent>
 
         {/* HTML Tab */}
-        <TabsContent value="html" className="flex-1 overflow-auto p-4 m-0">
+        <TabsContent value="html" className="flex-1 overflow-auto p-6 m-0">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
@@ -136,27 +155,36 @@ export function ResultViewer({ result, processing, selectedBlockIndex, onBlockCl
               </p>
               <div className="flex gap-2">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={() => handleCopy(result.html, "html")}
+                  className="gap-2"
                 >
                   {copied === "html" ? (
-                    <Check className="h-4 w-4" />
+                    <>
+                      <Check className="h-4 w-4" />
+                      Copied
+                    </>
                   ) : (
-                    <Copy className="h-4 w-4" />
+                    <>
+                      <Copy className="h-4 w-4" />
+                      Copy
+                    </>
                   )}
                 </Button>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={() => handleDownload(result.html, "document.html")}
+                  className="gap-2"
                 >
                   <Download className="h-4 w-4" />
+                  Download
                 </Button>
               </div>
             </div>
             <div
-              className="prose prose-invert max-w-none bg-background p-4 rounded-lg border border-border"
+              className="prose prose-invert max-w-none bg-muted/50 p-6 rounded-xl border border-border"
               dangerouslySetInnerHTML={{ __html: result.html }}
             />
           </div>

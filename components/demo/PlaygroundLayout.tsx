@@ -10,14 +10,14 @@ export function PlaygroundLayout({ children }: PlaygroundLayoutProps) {
   const [leftPanel, rightPanel] = children
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-[600px]">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-h-[700px]">
       {/* Left Panel: Document Viewer */}
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
         {leftPanel}
       </div>
 
       {/* Right Panel: Result Viewer */}
-      <div className="bg-card rounded-lg border border-border overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden shadow-xl hover:shadow-2xl transition-shadow duration-300">
         {rightPanel}
       </div>
     </div>

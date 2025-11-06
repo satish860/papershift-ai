@@ -39,11 +39,11 @@ export function FileUploader({ onFileSelect }: FileUploaderProps) {
       <div
         {...getRootProps()}
         className={`
-          relative w-full p-12 border-2 border-dashed rounded-lg
-          transition-all cursor-pointer
+          relative w-full p-12 border-2 border-dashed rounded-xl
+          transition-all duration-300 cursor-pointer
           ${isDragActive
-            ? 'border-primary bg-primary/10 scale-[1.02]'
-            : 'border-muted-foreground/25 hover:border-primary hover:bg-primary/5'
+            ? 'border-primary bg-primary/10 scale-[1.01] shadow-lg shadow-primary/20'
+            : 'border-border hover:border-primary/50 hover:bg-primary/5 hover:shadow-md'
           }
         `}
       >
@@ -52,17 +52,23 @@ export function FileUploader({ onFileSelect }: FileUploaderProps) {
         <div className="flex flex-col items-center gap-4 text-center">
           {isDragActive ? (
             <>
-              <File className="h-12 w-12 text-primary animate-pulse" />
-              <p className="text-lg font-medium">Drop to upload</p>
+              <div className="relative">
+                <File className="h-16 w-16 text-primary animate-bounce" />
+                <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse"></div>
+              </div>
+              <p className="text-lg font-semibold text-primary">Drop to upload</p>
             </>
           ) : (
             <>
-              <Upload className="h-12 w-12 text-muted-foreground" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/10 blur-2xl rounded-full"></div>
+                <Upload className="h-16 w-16 text-muted-foreground relative" />
+              </div>
               <div>
-                <p className="text-lg font-medium">
+                <p className="text-lg font-semibold">
                   Drop file or click to upload
                 </p>
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-2">
                   PDF, PNG, JPG up to 100MB
                 </p>
               </div>
@@ -72,9 +78,9 @@ export function FileUploader({ onFileSelect }: FileUploaderProps) {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 text-sm text-destructive">
-          <AlertCircle className="h-4 w-4" />
-          <p>{error}</p>
+        <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-destructive/10 border border-destructive/20">
+          <AlertCircle className="h-4 w-4 text-destructive flex-shrink-0" />
+          <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
     </div>

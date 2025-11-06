@@ -33,25 +33,30 @@ export function DocumentViewer({ imageUrl, boundingBoxes = [], imageDimensions, 
   return (
     <div className="relative h-full flex flex-col">
       {/* Toolbar */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <p className="text-sm font-medium">Document</p>
+      <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
         <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+          <p className="text-sm font-medium">Document Preview</p>
+        </div>
+        <div className="flex items-center gap-1 bg-background rounded-lg p-1 shadow-sm">
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={handleZoomOut}
             disabled={scale <= 0.5}
+            className="h-8 w-8 p-0"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-muted-foreground w-12 text-center">
+          <span className="text-sm font-medium text-foreground px-2 min-w-[3.5rem] text-center">
             {Math.round(scale * 100)}%
           </span>
           <Button
             variant="ghost"
-            size="icon"
+            size="sm"
             onClick={handleZoomIn}
             disabled={scale >= 2.0}
+            className="h-8 w-8 p-0"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -59,10 +64,10 @@ export function DocumentViewer({ imageUrl, boundingBoxes = [], imageDimensions, 
       </div>
 
       {/* Document Display */}
-      <div className="flex-1 overflow-auto bg-background">
-        <div className="flex flex-col items-center py-4">
+      <div className="flex-1 overflow-auto bg-gradient-to-br from-muted/20 to-background">
+        <div className="flex flex-col items-center py-8 px-4">
           <div
-            className="inline-block relative"
+            className="inline-block relative shadow-2xl rounded-lg overflow-hidden"
             style={{
               transform: `scale(${scale})`,
               transformOrigin: "center",
